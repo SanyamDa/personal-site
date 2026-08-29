@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+:root {
+  --bg: #F6F6F2;
+  --surface: #FFFFFF;
+  --surface-2: #EEEEE7;
+  --ink: #14171B;
+  --ink-muted: #5B6168;
+  --ink-faint: #8B9298;
+  --accent: #2F5FE0;
+  --accent-ink: #FFFFFF;
+  --accent-warm: #C67C13;
+  --accent-warm-bg: #F3E3CC;
+  --line: #E1E1DA;
+  --line-strong: #CBCBC0;
+}
+
+:root.dark {
+  --bg: #0B0D10;
+  --surface: #12151A;
+  --surface-2: #171B21;
+  --ink: #EDEFEA;
+  --ink-muted: #97A0A8;
+  --ink-faint: #656D74;
+  --accent: #6E93FF;
+  --accent-ink: #0B0D10;
+  --accent-warm: #F2B84B;
+  --accent-warm-bg: #3A2E15;
+  --line: #23272D;
+  --line-strong: #333941;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+}
+
+body {
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  transition: background-color .2s ease, color .2s ease;
+}
+
+.glass {
+  background: var(--surface);
+  background: color-mix(in srgb, var(--surface) 78%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+}
+
+::selection { background: var(--accent); color: var(--accent-ink); }
+
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.font-display { font-family: var(--font-mono); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  * { transition: none !important; animation: none !important; }
+}

@@ -1,0 +1,56 @@
+---
+import { profile } from '../data/content';
+---
+
+<section id="contact" class="max-w-5xl mx-auto px-6 mb-24 scroll-mt-20 reveal">
+  <h2 class="font-display text-xl font-semibold mb-6 pb-3 border-b" style="color:var(--ink); border-color:var(--line);">
+    Contact
+  </h2>
+  <p class="text-[15.5px] mb-6 max-w-xl" style="color:var(--ink);">
+    The fastest way to reach me is email. I read everything that comes in.
+  </p>
+  <div class="flex flex-wrap items-center gap-3 mb-5">
+    <a
+      href={`mailto:${profile.email}`}
+      class="font-display text-[13px] px-4 py-2 rounded-md"
+      style="background:var(--accent); color:var(--accent-ink);"
+    >
+      Email me
+    </a>
+    <a
+      href={profile.github}
+      target="_blank"
+      rel="noopener"
+      class="font-display text-[13px] px-4 py-2 rounded-md border"
+      style="border-color:var(--line-strong); color:var(--ink);"
+    >
+      GitHub
+    </a>
+    <a
+      href={profile.linkedin}
+      target="_blank"
+      rel="noopener"
+      class="font-display text-[13px] px-4 py-2 rounded-md border"
+      style="border-color:var(--line-strong); color:var(--ink);"
+    >
+      LinkedIn
+    </a>
+  </div>
+  <p class="font-display text-[13px]" style="color:var(--ink-faint);">{profile.email}</p>
+</section>
+
+<footer class="border-t py-8" style="border-color:var(--line);">
+  <div class="max-w-5xl mx-auto px-6 flex flex-wrap items-center justify-between gap-2">
+    <a
+      href="#top"
+      aria-label="Back to top"
+      class="font-display text-[12px] font-semibold px-2.5 py-1 rounded-md border"
+      style="border-color:var(--line-strong); color:var(--ink-muted);"
+    >
+      SJ
+    </a>
+    <p class="font-display text-[12px]" style="color:var(--ink-faint);">
+      &copy; {new Date().getFullYear()} {profile.name}
+    </p>
+  </div>
+</footer>

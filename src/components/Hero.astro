@@ -1,0 +1,21 @@
+---
+import { profile } from '../data/content';
+---
+
+<section id="top" class="max-w-5xl mx-auto px-6 pt-20 pb-14">
+  <div class="flex flex-col-reverse sm:flex-row sm:items-center gap-8">
+    <div class="flex-1">
+      <h1 class="font-display font-semibold leading-tight mb-3" style="color:var(--ink); font-size:clamp(28px,4.5vw,42px); text-wrap:balance;">
+        {profile.name}
+      </h1>
+      <p class="text-lg sm:text-xl" style="color:var(--ink-muted);">{profile.subline}</p>
+    </div>
+
+    <img
+      src="/photo.jpg"
+      alt={profile.name}
+      class="w-28 h-28 sm:w-32 sm:h-32 rounded-full object-cover border shrink-0 self-start sm:self-auto"
+      style="border-color:var(--line-strong);"
+    />
+  </div>
+</section>
