@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import PageHead from '../components/PageHead.astro';
+import { people } from '../data/content';
+
+const initials = (name: string) => name.split(' ').map((w) => w[0]).slice(0, 2).join('');
+---
+
+<Layout title="People" description="The mentors, teammates, and friends who have had Sanyam Jain's back.">
+  <PageHead section="people" intro="Nobody wins a match alone. These are the mentors, teammates, and friends who have had my back." />
+
+  <section class="wrap">
+    {people.length === 0 ? (
+      <div class="squad">
+        {[1, 2, 3].map(() => (
+          <div class="person ghost" aria-hidden="true">
+            <span class="avatar"></span>
+            <span class="bar w60"></span>
+            <span class="bar w40"></span>
+          </div>
+        ))}
+        <p class="slot wide">The squad sheet is being written. Names coming soon.</p>
+      </div>
+    ) : (
+      <ul class="squad">
+        {people.map((p) => (
+          <li class="person">
+            <span class="avatar display" aria-hidden="true">{initials(p.name)}</span>
+            <h2>{p.link ? <a href={p.link} target="_blank" rel="noopener">{p.name}</a> : p.name}</h2>
+            <p class="role">{p.role}</p>
+            <p class="note">{p.note}</p>
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+</Layout>
+
+<style>
+  .squad {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: 16px;
+  }
+  .person {
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 22px;
+    padding: 22px;
+  }
+  .avatar {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--kit);
+    color: var(--kit-trim);
+    border: 2px solid var(--kit-trim);
+    font-size: 26px;
+    margin-bottom: 14px;
+  }
+  .person h2 { margin: 0; font-size: 21px; font-stretch: 110%; }
+  .person h2 a { color: var(--ink); }
+  .role { margin: 2px 0 0; font-weight: 600; color: var(--kit-ui); font-size: 15px; }
+  .note { margin: 10px 0 0; color: var(--ink-muted); }
+
+  .ghost { background: transparent; border: 2px dashed var(--line-strong); }
+  .ghost .avatar { background: var(--surface-2); border-color: var(--line-strong); }
+  .bar { display: block; height: 12px; border-radius: 6px; background: var(--surface-2); margin-top: 10px; }
+  .w60 { width: 60%; } .w40 { width: 40%; }
+  .wide { grid-column: 1 / -1; margin: 0; }
+</style>

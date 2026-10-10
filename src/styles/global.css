@@ -1,40 +1,74 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
+@import '@fontsource/anton/400.css';
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource-variable/archivo/wdth-italic.css';
 @import "tailwindcss";
 
 @theme {
-  --font-sans: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  --font-sans: 'Archivo Variable', 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-display: 'Anton', 'Archivo', Impact, sans-serif;
 }
 
+/* ---------- Base palette: chalk background, turf greens ---------- */
 :root {
-  --bg: #F6F6F2;
+  --bg: #F4F5EF;          /* chalk */
   --surface: #FFFFFF;
-  --surface-2: #EEEEE7;
-  --ink: #14171B;
-  --ink-muted: #5B6168;
-  --ink-faint: #8B9298;
-  --accent: #2F5FE0;
-  --accent-ink: #FFFFFF;
-  --accent-warm: #C67C13;
-  --accent-warm-bg: #F3E3CC;
-  --line: #E1E1DA;
-  --line-strong: #CBCBC0;
+  --surface-2: #E9ECE2;
+  --ink: #121614;
+  --ink-muted: #545C57;
+  --ink-faint: #8A928C;
+  --line: #DADDD3;
+  --line-strong: #BFC4B8;
+
+  --turf: #1E6B3A;
+  --turf-2: #237A43;
+  --turf-line: rgba(255, 255, 255, 0.85);
+  --board: #173F27;       /* tactics board */
+  --board-ink: #EAF3EC;
 }
 
 :root.dark {
-  --bg: #0B0D10;
-  --surface: #12151A;
-  --surface-2: #171B21;
-  --ink: #EDEFEA;
-  --ink-muted: #97A0A8;
-  --ink-faint: #656D74;
-  --accent: #6E93FF;
-  --accent-ink: #0B0D10;
-  --accent-warm: #F2B84B;
-  --accent-warm-bg: #3A2E15;
-  --line: #23272D;
-  --line-strong: #333941;
+  --bg: #0D120F;
+  --surface: #141B17;
+  --surface-2: #1A231E;
+  --ink: #EEF2EC;
+  --ink-muted: #A3ADA6;
+  --ink-faint: #6C766F;
+  --line: #243029;
+  --line-strong: #34433A;
+
+  --turf: #154D2A;
+  --turf-2: #185731;
+  --turf-line: rgba(235, 245, 238, 0.7);
+  --board: #0F2A1A;
+  --board-ink: #DCEBE0;
 }
+
+/* ---------- Kits: switchable, recolor the whole site ---------- */
+/* --kit: shirt body, --kit-trim: number + outline, --kit-accent: sleeves + collar, --kit-ui: links + buttons */
+:root, :root[data-kit="purdue"] {
+  --kit: #CFB991;
+  --kit-trim: #121614;
+  --kit-accent: #121614;
+  --kit-ui: #866A2C;
+  --kit-ui-ink: #FFFFFF;
+}
+:root[data-kit="thailand"] {
+  --kit: #00247D;
+  --kit-trim: #FFFFFF;
+  --kit-accent: #EF3340;
+  --kit-ui: #00247D;
+  --kit-ui-ink: #FFFFFF;
+}
+:root[data-kit="india"] {
+  --kit: #312C6A;
+  --kit-trim: #FFFFFF;
+  --kit-accent: #FFFFFF;
+  --kit-ui: #312C6A;
+  --kit-ui-ink: #FFFFFF;
+}
+:root.dark, :root.dark[data-kit="purdue"] { --kit-ui: #DCC795; --kit-ui-ink: #121614; }
+:root.dark[data-kit="thailand"] { --kit-ui: #FF6B77; --kit-ui-ink: #121614; }
+:root.dark[data-kit="india"] { --kit-ui: #ABA5F2; --kit-ui-ink: #121614; }
 
 * { box-sizing: border-box; }
 
@@ -44,44 +78,88 @@ html {
 }
 
 body {
+  margin: 0;
+  padding-bottom: 96px;
   background: transparent;
   color: var(--ink);
   font-family: var(--font-sans);
-  transition: background-color .2s ease, color .2s ease;
+  font-size: 17px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color .25s ease, color .25s ease;
 }
 
-.glass {
+.display {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+}
+
+.wrap {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+@media (max-width: 640px) {
+  .wrap { padding: 0 16px; }
+}
+
+a { color: var(--kit-ui); text-underline-offset: 3px; }
+a:focus-visible, button:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--kit-ui);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection { background: var(--kit-ui); color: var(--kit-ui-ink); }
+
+/* Shared button */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 14px/1 var(--font-sans);
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1.5px solid var(--line-strong);
   background: var(--surface);
-  background: color-mix(in srgb, var(--surface) 78%, transparent);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color .15s ease, transform .15s ease;
+}
+.btn:hover { border-color: var(--ink); }
+.btn:active { transform: translateY(1px); }
+.btn-solid {
+  background: var(--kit-ui);
+  color: var(--kit-ui-ink);
+  border-color: var(--kit-ui);
+}
+.btn-solid:hover { border-color: var(--ink); }
+
+/* Section heading used across pages */
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(30px, 4.2vw, 44px);
+  line-height: 1;
+  margin: 0 0 18px;
 }
 
-.reveal {
-  opacity: 0;
-  transform: translateY(18px);
-  transition: opacity .7s ease, transform .7s ease;
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-@media (prefers-reduced-motion: reduce) {
-  .reveal { opacity: 1; transform: none; transition: none; }
-}
+.muted { color: var(--ink-muted); }
 
-::selection { background: var(--accent); color: var(--accent-ink); }
-
-a { color: var(--accent); }
-a:focus-visible, button:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-  border-radius: 2px;
+/* Empty-state slot, shown until content is added */
+.slot {
+  border: 2px dashed var(--line-strong);
+  border-radius: 16px;
+  padding: 22px;
+  color: var(--ink-faint);
+  font-size: 15px;
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
 }
-
-.font-display { font-family: var(--font-mono); }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
-  * { transition: none !important; animation: none !important; }
+  *, *::before, *::after { transition: none !important; animation: none !important; }
 }

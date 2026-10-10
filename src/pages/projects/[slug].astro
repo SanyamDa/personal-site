@@ -1,0 +1,276 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { projects, type Project } from '../../data/content';
+
+export function getStaticPaths() {
+  return projects.map((p) => ({ params: { slug: p.slug }, props: { project: p } }));
+}
+
+const { project: p } = Astro.props as { project: Project };
+const learningSlots = [0, 1, 2];
+---
+
+<Layout title={p.name} description={p.goal}>
+  <article class="report">
+    <div class="wrap narrow">
+      <a class="back" href="/projects">Back to projects</a>
+
+      <header class="top">
+        <div class="meta">
+          <span class={`status ${p.status === 'In play' ? 'live' : ''}`}>{p.status}</span>
+          <span class="period">{p.period}</span>
+        </div>
+        <h1 class="display pname">{p.name}</h1>
+        <p class="psub">{p.subtitle}</p>
+        <ul class="tags">{p.tags.map((t) => <li>{t}</li>)}</ul>
+      </header>
+
+      <section class="block">
+        <h2 class="section-title">The goal</h2>
+        <p class="goal">{p.goal}</p>
+      </section>
+
+      <section class="block">
+        <h2 class="section-title">Video and photos</h2>
+        {p.media.length === 0 ? (
+          <div class="slot">Footage coming soon.</div>
+        ) : (
+          <div class={`media ${p.media.length === 1 ? 'one' : ''}`}>
+            {p.media.map((m) => (
+              <figure>
+                {m.type === 'youtube' && (
+                  <div class="frame">
+                    <iframe
+                      src={`https://www.youtube-nocookie.com/embed/${m.id}`}
+                      title={m.caption ?? `${p.name} video`}
+                      loading="lazy"
+                      allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                )}
+                {m.type === 'video' && (
+                  <div class="frame"><video src={m.src} controls playsinline preload="metadata"></video></div>
+                )}
+                {m.type === 'image' && <img src={m.src} alt={m.alt} loading="lazy" />}
+                {m.caption && <figcaption>{m.caption}</figcaption>}
+              </figure>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section class="block">
+        <h2 class="section-title">Top 3 learnings</h2>
+        <ol class="learnings">
+          {learningSlots.map((i) => {
+            const l = p.learnings[i];
+            return l ? (
+              <li class="learning">
+                <span class="rank display" aria-hidden="true">{i + 1}</span>
+                <div>
+                  <h3>{l.title}</h3>
+                  <p>{l.body}</p>
+                </div>
+              </li>
+            ) : (
+              <li class="learning empty">
+                <span class="rank display" aria-hidden="true">{i + 1}</span>
+                <div><p>Learning coming soon.</p></div>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
+
+      <section class="block">
+        <h2 class="section-title">Mental note</h2>
+        <div class={`board ${p.mentalNote ? '' : 'board-empty'}`}>
+          <svg class="tactics" viewBox="0 0 200 120" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+              <path d="M20 22 l12 12 M32 22 l-12 12" />
+              <circle cx="168" cy="30" r="8" />
+              <circle cx="150" cy="92" r="8" />
+              <path d="M40 40 C 80 90, 120 100, 140 92" stroke-dasharray="6 7" />
+              <path d="M132 86 l9 6 l-10 4" />
+            </g>
+          </svg>
+          <p class="note-label">Personal reminder</p>
+          <p class="note">{p.mentalNote || 'Note coming soon.'}</p>
+        </div>
+      </section>
+
+      <section class="block">
+        <h2 class="section-title">Grateful for</h2>
+        <p class="muted small">The people who gave their time, expertise, or encouragement to this project.</p>
+        {p.grateful.length === 0 ? (
+          <div class="slot">Names coming soon.</div>
+        ) : (
+          <ul class="names">{p.grateful.map((n) => <li>{n}</li>)}</ul>
+        )}
+      </section>
+
+      {p.improvements && (
+        <section class="block">
+          <h2 class="section-title">Potential improvements</h2>
+          {p.improvements.length === 0 ? (
+            <div class="slot">Ideas coming soon.</div>
+          ) : (
+            <ul class="improvements">
+              {p.improvements.map((imp) => (
+                <li><h3>{imp.title}</h3><p>{imp.body}</p></li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
+
+      {p.links && p.links.length > 0 && (
+        <section class="block links">
+          {p.links.map((l) => <a class="btn" href={l.href} target="_blank" rel="noopener">{l.label}</a>)}
+        </section>
+      )}
+
+      <nav class="end">
+        <a class="btn btn-solid" href="/projects">All projects</a>
+        <a class="btn" href="/">Back to the pitch</a>
+      </nav>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .narrow { max-width: 820px; }
+  .back {
+    display: inline-block;
+    margin-top: 32px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--ink-muted);
+  }
+  .back::before { content: '‹ '; }
+  .back:hover { color: var(--ink); }
+
+  .top {
+    margin-top: 20px;
+    padding-bottom: 36px;
+    border-bottom: 1.5px solid var(--line);
+  }
+  .meta { display: flex; align-items: center; gap: 12px; }
+  .status {
+    font-weight: 700;
+    font-size: 13px;
+    background: var(--kit);
+    color: var(--kit-trim);
+    border: 1.5px solid var(--kit-trim);
+    border-radius: 999px;
+    padding: 5px 11px;
+  }
+  .status.live::before {
+    content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: #E5302F; margin-right: 6px; vertical-align: 1px;
+  }
+  .period { font-weight: 600; color: var(--ink-muted); font-size: 15px; }
+  .pname { font-size: clamp(88px, 18vw, 180px); margin: 14px 0 0; }
+  .psub { margin: 10px 0 0; font-size: 20px; font-weight: 700; font-stretch: 112%; }
+  .tags { list-style: none; padding: 0; margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags li { font-size: 13.5px; font-weight: 600; padding: 5px 11px; border-radius: 999px; background: var(--surface-2); }
+
+  .block { margin-top: 56px; }
+  .goal {
+    margin: 0;
+    font-size: clamp(22px, 2.6vw, 28px);
+    line-height: 1.35;
+    font-weight: 600;
+    font-stretch: 105%;
+    max-width: 34ch;
+    padding-left: 18px;
+    border-left: 6px solid var(--kit);
+    transition: border-color .3s ease;
+  }
+
+  .media { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .media.one { grid-template-columns: 1fr; }
+  figure { margin: 0; }
+  .frame { position: relative; aspect-ratio: 16 / 9; border-radius: 16px; overflow: hidden; background: #000; }
+  .frame iframe, .frame video { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  figure img { display: block; width: 100%; border-radius: 16px; }
+  figcaption { margin-top: 8px; font-size: 14px; color: var(--ink-muted); }
+
+  .learnings { list-style: none; padding: 0; margin: 0; display: grid; gap: 14px; }
+  .learning {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 18px;
+    align-items: start;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    padding: 20px 22px;
+  }
+  .rank {
+    font-size: 60px;
+    line-height: .85;
+    color: var(--kit-ui);
+    text-align: center;
+  }
+  .learning h3 { margin: 2px 0 6px; font-size: 20px; font-stretch: 110%; }
+  .learning p { margin: 0; color: var(--ink-muted); }
+  .learning.empty { background: transparent; border: 2px dashed var(--line-strong); }
+  .learning.empty .rank { color: var(--line-strong); }
+  .learning.empty p { color: var(--ink-faint); padding-top: 14px; }
+
+  .board {
+    position: relative;
+    background: var(--board);
+    color: var(--board-ink);
+    border-radius: 22px;
+    padding: 30px 32px 34px;
+    overflow: hidden;
+    border: 6px solid color-mix(in srgb, var(--board) 70%, #000);
+  }
+  .tactics {
+    position: absolute;
+    right: 14px;
+    top: 10px;
+    width: 200px;
+    opacity: .22;
+  }
+  .note-label { margin: 0 0 10px; font-weight: 700; color: var(--board-ink); opacity: .7; font-size: 15px; }
+  .note {
+    position: relative;
+    margin: 0;
+    font-size: clamp(19px, 2.2vw, 23px);
+    line-height: 1.45;
+    font-style: italic;
+    font-stretch: 95%;
+    max-width: 52ch;
+  }
+  .board-empty .note { opacity: .6; }
+
+  .small { margin: -6px 0 16px; font-size: 15px; }
+  .names { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .names li {
+    font-weight: 700;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: var(--surface);
+    border: 1.5px solid var(--line-strong);
+  }
+
+  .improvements { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
+  .improvements li { border-left: 4px solid var(--kit-ui); padding: 4px 0 4px 16px; }
+  .improvements h3 { margin: 0 0 4px; font-size: 18px; }
+  .improvements p { margin: 0; color: var(--ink-muted); }
+
+  .links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .end { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 64px; }
+
+  @media (max-width: 640px) {
+    .media { grid-template-columns: 1fr; }
+    .learning { grid-template-columns: 44px 1fr; gap: 12px; padding: 16px; }
+    .rank { font-size: 44px; }
+    .board { padding: 24px 20px 26px; }
+    .tactics { width: 130px; }
+  }
+</style>

@@ -8,56 +8,68 @@ interface Props {
 }
 
 const {
-  title = 'Sanyam Jain | AI Automation & Builder',
-  description = 'CS student at Purdue building AI automation systems and exploring where tech meets finance.',
+  title = 'Sanyam Jain',
+  description = 'CS student at Purdue building AI automation systems, robots, and anything else worth building. Former club footballer and Thai cricketer.',
 } = Astro.props;
+const fullTitle = title === 'Sanyam Jain' ? title : `${title} | Sanyam Jain`;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-kit="purdue">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="generator" content={Astro.generator} />
-    <title>{title}</title>
+    <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
+    <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary" />
     <script is:inline>
       (function () {
+        var root = document.documentElement;
         try {
           var stored = localStorage.getItem('theme');
           var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var dark = stored ? stored === 'dark' : prefersDark;
-          document.documentElement.classList.toggle('dark', dark);
+          root.classList.toggle('dark', stored ? stored === 'dark' : prefersDark);
+          var kit = localStorage.getItem('kit');
+          if (kit) root.setAttribute('data-kit', kit);
         } catch (e) {}
       })();
     </script>
   </head>
   <body>
     <BackgroundFX />
-    <slot />
+    <main>
+      <slot />
+    </main>
 
-    <script>
-      // Fade-up reveal on scroll for any .reveal element
-      const revealEls = document.querySelectorAll('.reveal');
-      if (revealEls.length) {
-        const io = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-                io.unobserve(entry.target);
-              }
-            });
-          },
-          { threshold: 0.15 }
-        );
-        revealEls.forEach((el) => io.observe(el));
-      }
+    <script is:inline>
+      // Kit switching, shared by the header button and any [data-kit-choice] buttons.
+      (function () {
+        var KITS = ['purdue', 'thailand', 'india'];
+        var NAMES = { purdue: 'Purdue kit', thailand: 'Thailand kit', india: 'India kit' };
+        var root = document.documentElement;
+        function current() { var k = root.getAttribute('data-kit'); return KITS.indexOf(k) > -1 ? k : 'purdue'; }
+        function apply(kit) {
+          root.setAttribute('data-kit', kit);
+          try { localStorage.setItem('kit', kit); } catch (e) {}
+          document.querySelectorAll('[data-kit-choice]').forEach(function (b) {
+            b.setAttribute('aria-pressed', String(b.getAttribute('data-kit-choice') === kit));
+          });
+          document.querySelectorAll('[data-kit-label]').forEach(function (el) { el.textContent = NAMES[kit]; });
+        }
+        document.addEventListener('click', function (e) {
+          var choice = e.target.closest('[data-kit-choice]');
+          if (choice) { apply(choice.getAttribute('data-kit-choice')); return; }
+          if (e.target.closest('[data-kit-cycle]')) {
+            apply(KITS[(KITS.indexOf(current()) + 1) % KITS.length]);
+          }
+        });
+        apply(current());
+      })();
     </script>
   </body>
 </html>

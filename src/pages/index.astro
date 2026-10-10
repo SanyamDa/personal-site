@@ -1,22 +1,75 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Header from '../components/Header.astro';
-import Hero from '../components/Hero.astro';
-import Now from '../components/Now.astro';
-import About from '../components/About.astro';
-import Projects from '../components/ProjectsCube.astro';
-import Experience from '../components/Experience.astro';
-import Contact from '../components/Contact.astro';
+import Pitch from '../components/Pitch.astro';
+import KitPicker from '../components/KitPicker.astro';
+import Socials from '../components/Socials.astro';
+import { profile } from '../data/content';
 ---
 
 <Layout>
-  <Header />
-  <main>
-    <Hero />
-    <Now />
-    <About />
-    <Projects />
-    <Experience />
-    <Contact />
-  </main>
+  <section class="wrap hero">
+    <div class="intro">
+      <h1 class="display name">
+        <span>{profile.first}</span>
+        <span>{profile.last}</span>
+      </h1>
+      <p class="sub">{profile.subline}</p>
+    </div>
+    <Socials />
+  </section>
+
+  <section class="wrap field" aria-label="Pick a section">
+    <Pitch />
+    <div class="under">
+      <p class="hint">Tap a player to see that side of me.</p>
+      <KitPicker />
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .hero {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px 40px;
+    padding-top: 64px;
+    padding-bottom: 44px;
+  }
+  .name {
+    margin: 0;
+    font-size: clamp(58px, 11.25vw, 147px);
+    display: flex;
+    flex-direction: column;
+    row-gap: .14em;
+  }
+  .name span:last-child {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--ink);
+  }
+  .sub {
+    margin: 26px 0 0;
+    font-size: clamp(18px, 1.9vw, 22px);
+    font-weight: 700;
+    font-stretch: 118%;
+    color: var(--kit-ui);
+    transition: color .3s ease;
+  }
+
+  .field { padding-top: 4px; }
+  .under {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 18px;
+  }
+  .hint { margin: 0; font-weight: 600; font-stretch: 110%; }
+
+  @media (max-width: 640px) {
+    .hero { padding-top: 40px; padding-bottom: 32px; }
+    .name { -webkit-text-stroke-width: 1.5px; }
+  }
+</style>

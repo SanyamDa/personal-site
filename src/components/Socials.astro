@@ -1,0 +1,113 @@
+---
+import { socials } from '../data/content';
+
+const items = [
+  { key: 'linkedin', label: 'LinkedIn', href: socials.linkedin },
+  { key: 'youtube', label: 'YouTube', href: socials.youtube },
+  { key: 'x', label: 'X', href: socials.x },
+  { key: 'instagram', label: 'Instagram', href: socials.instagram },
+];
+---
+
+<ul class="socials" aria-label="Find me online">
+  {items.map((i) => (
+    <li>
+      <a
+        class={`soc ${i.key}`}
+        href={i.href || '#'}
+        target={i.href ? '_blank' : undefined}
+        rel={i.href ? 'noopener' : undefined}
+        aria-label={i.label}
+        title={i.label}
+      >
+        {i.key === 'linkedin' && (
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <rect x="2" y="2" width="44" height="44" rx="9" fill="#0A66C2" />
+            <rect x="10.5" y="19" width="6.4" height="19" fill="#fff" />
+            <circle cx="13.7" cy="12.7" r="3.8" fill="#fff" />
+            <path d="M21.5 19h6.1v2.7c.9-1.6 3-3.2 6.2-3.2 6.5 0 7.7 4.1 7.7 9.5V38h-6.4v-9c0-2.2 0-5-3.1-5-3 0-3.5 2.4-3.5 4.8V38h-6.4V19Z" fill="#fff" />
+          </svg>
+        )}
+        {i.key === 'youtube' && (
+          <svg viewBox="0 0 64 46" aria-hidden="true">
+            <rect x="1" y="1" width="62" height="44" rx="12" fill="#FF0000" />
+            <path d="M25 13 L44 23 L25 33 Z" fill="#fff" />
+          </svg>
+        )}
+        {i.key === 'x' && (
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.21-6.82-5.97 6.82H1.68l7.73-8.84L1.25 2.25h6.83l4.71 6.23 5.45-6.23Zm-1.16 17.52h1.83L7.08 4.13H5.12l11.96 15.64Z" />
+          </svg>
+        )}
+        {i.key === 'instagram' && (
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <defs>
+              <linearGradient id="ig-glow" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0" stop-color="#FEDA75" />
+                <stop offset=".35" stop-color="#FA7E1E" />
+                <stop offset=".6" stop-color="#D62976" />
+                <stop offset=".85" stop-color="#962FBF" />
+                <stop offset="1" stop-color="#4F5BD5" />
+              </linearGradient>
+            </defs>
+            <g class="ig" fill="none" stroke-width="4">
+              <rect x="5" y="5" width="38" height="38" rx="11" />
+              <circle cx="24" cy="24" r="9" />
+            </g>
+            <circle class="ig-dot" cx="35" cy="13" r="2.6" />
+          </svg>
+        )}
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .socials {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .soc {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 18px;
+    color: var(--ink);
+    opacity: .38;
+    filter: grayscale(1);
+    transition: opacity .25s ease, filter .25s ease, transform .25s cubic-bezier(.3,.7,.2,1), background-color .25s ease;
+  }
+  .soc svg { width: 42px; height: 42px; overflow: visible; }
+  .youtube svg { width: 46px; }
+  .x svg { width: 34px; height: 34px; }
+
+  .ig { stroke: currentColor; }
+  .ig-dot { fill: currentColor; }
+
+  /* Light up on hover or keyboard focus */
+  .soc:hover, .soc:focus-visible {
+    opacity: 1;
+    filter: grayscale(0);
+    transform: translateY(-4px) scale(1.06);
+    background: var(--surface);
+  }
+  .linkedin:hover svg, .linkedin:focus-visible svg { filter: drop-shadow(0 6px 14px rgba(10,102,194,.45)); }
+  .youtube:hover svg, .youtube:focus-visible svg { filter: drop-shadow(0 6px 14px rgba(255,0,0,.45)); }
+  .x:hover svg, .x:focus-visible svg { filter: drop-shadow(0 6px 12px color-mix(in srgb, var(--ink) 35%, transparent)); }
+  .instagram:hover .ig, .instagram:focus-visible .ig { stroke: url(#ig-glow); }
+  .instagram:hover .ig-dot, .instagram:focus-visible .ig-dot { fill: #962FBF; }
+  .instagram:hover svg, .instagram:focus-visible svg { filter: drop-shadow(0 6px 14px rgba(214,41,118,.4)); }
+
+  @media (max-width: 640px) {
+    .socials { gap: 6px; }
+    .soc { width: 54px; height: 54px; }
+    .soc svg { width: 34px; height: 34px; }
+    .youtube svg { width: 38px; }
+    .x svg { width: 28px; height: 28px; }
+  }
+</style>

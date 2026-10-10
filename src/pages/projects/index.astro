@@ -1,0 +1,101 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PageHead from '../../components/PageHead.astro';
+import { projects } from '../../data/content';
+---
+
+<Layout title="Projects" description="Projects by Sanyam Jain, each written up as a match report: the goal, the footage, what I learned, and who helped.">
+  <PageHead section="projects" intro="Every build gets a match report: what I set out to do, the footage, what I learned, and who helped me get it over the line." />
+
+  <section class="wrap grid">
+    {projects.map((p) => (
+      <a class="fixture" href={`/projects/${p.slug}`}>
+        <div class="side">
+          <span class={`status ${p.status === 'In play' ? 'live' : ''}`}>{p.status}</span>
+          <span class="period">{p.period}</span>
+        </div>
+        <div class="main">
+          <h2 class="display pname">{p.name}</h2>
+          <p class="psub">{p.subtitle}</p>
+          <p class="goal">{p.goal}</p>
+          <ul class="tags">{p.tags.map((t) => <li>{t}</li>)}</ul>
+          <span class="cta">Read the match report</span>
+        </div>
+      </a>
+    ))}
+    <div class="fixture next" aria-hidden="true">
+      <div class="side"><span class="status">Up next</span></div>
+      <div class="main">
+        <p class="display pname faint">Next fixture</p>
+        <p class="psub">A new build is in training.</p>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 460px), 1fr));
+    gap: 20px;
+    align-items: start;
+  }
+  .fixture {
+    display: grid;
+    grid-template-columns: 112px 1fr;
+    border-radius: 24px;
+    overflow: hidden;
+    background: var(--surface);
+    border: 1.5px solid var(--line);
+    text-decoration: none;
+    color: var(--ink);
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  a.fixture:hover { border-color: var(--ink); transform: translateY(-3px); }
+  .side {
+    background: repeating-linear-gradient(0deg, var(--turf) 0 20px, var(--turf-2) 20px 40px);
+    color: #fff;
+    padding: 18px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+  .status {
+    font-weight: 700;
+    font-size: 13px;
+    background: var(--kit);
+    color: var(--kit-trim);
+    border-radius: 999px;
+    padding: 5px 10px;
+    white-space: nowrap;
+  }
+  .status.live::before {
+    content: '';
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: #E5302F;
+    margin-right: 6px;
+    vertical-align: 1px;
+  }
+  .period { font-size: 13px; font-weight: 600; opacity: .9; line-height: 1.3; }
+  .main { padding: 22px 24px 24px; }
+  .pname { font-size: 56px; margin: 0; }
+  .faint { color: var(--ink-faint); }
+  .psub { margin: 6px 0 0; font-weight: 700; font-stretch: 110%; }
+  .goal { margin: 12px 0 0; color: var(--ink-muted); max-width: 52ch; }
+  .tags { list-style: none; padding: 0; margin: 16px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags li { font-size: 13px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: var(--surface-2); }
+  .cta {
+    display: inline-block;
+    margin-top: 18px;
+    font-weight: 700;
+    color: var(--kit-ui);
+    border-bottom: 2px solid currentColor;
+  }
+  .next { border-style: dashed; background: transparent; }
+  .next .side { background: var(--surface-2); }
+  .next .status { background: var(--line-strong); color: var(--ink); }
+</style>

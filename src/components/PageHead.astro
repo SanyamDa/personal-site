@@ -1,0 +1,50 @@
+---
+import Jersey from './Jersey.astro';
+import { squad } from '../data/content';
+
+interface Props {
+  section: 'projects' | 'people' | 'problems' | 'passions';
+  intro: string;
+}
+const { section, intro } = Astro.props;
+const s = squad.find((p) => p.key === section)!;
+---
+
+<a class="wrap back" href="/">Back to the pitch</a>
+<section class="wrap head">
+  <div class="shirt">
+    <Jersey number={s.number} size={120} />
+  </div>
+  <div>
+    <p class="pos">No. {s.number}, {s.position}</p>
+    <h1 class="display title">{s.label}</h1>
+    <p class="intro">{intro}</p>
+  </div>
+</section>
+
+<style>
+  .back {
+    display: block;
+    padding-top: 32px;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--ink-muted);
+  }
+  .back::before { content: '‹ '; }
+  .back:hover { color: var(--ink); }
+  .head {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    padding-top: 24px;
+    padding-bottom: 40px;
+  }
+  .shirt { flex: none; rotate: -6deg; }
+  .pos { margin: 0 0 6px; font-weight: 700; color: var(--kit-ui); font-stretch: 110%; }
+  .title { margin: 0; font-size: clamp(64px, 11vw, 132px); }
+  .intro { margin: 14px 0 0; max-width: 58ch; color: var(--ink-muted); font-size: 18px; }
+  @media (max-width: 640px) {
+    .head { flex-direction: column; align-items: flex-start; gap: 16px; padding-top: 20px; }
+    .shirt :global(svg) { width: 84px; height: 84px; }
+  }
+</style>

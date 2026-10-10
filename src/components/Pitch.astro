@@ -1,0 +1,296 @@
+---
+import { squad } from '../data/content';
+import Jersey from './Jersey.astro';
+
+// Where each player stands. Landscape (desktop, attacking right) and portrait (phone, attacking up).
+const spots: Record<string, { x: number; y: number; mx: number; my: number }> = {
+  problems: { x: 8, y: 50, mx: 58, my: 87 },
+  people: { x: 33, y: 62, mx: 30, my: 67 },
+  passions: { x: 63, y: 18, mx: 24, my: 34 },
+  projects: { x: 59, y: 66, mx: 70, my: 48 },
+  me: { x: 86, y: 44, mx: 54, my: 12 },
+};
+
+const boards = ['Built in Bangkok', "Purdue CS, class of '29", 'VEX V5 national champs 22/23', 'CERN Beamline for Schools', 'Drummer on the side'];
+---
+
+<div class="stadium">
+  <div class="boards" aria-hidden="true">
+    {boards.map((b) => <span>{b}</span>)}
+  </div>
+
+  <div class="pitch" id="pitch">
+    <svg class="lines landscape" viewBox="0 0 105 68" preserveAspectRatio="none" aria-hidden="true">
+      <rect x="1" y="1" width="103" height="66" />
+      <line x1="52.5" y1="1" x2="52.5" y2="67" />
+      <circle cx="52.5" cy="34" r="9.15" />
+      <circle cx="52.5" cy="34" r="0.6" class="dot" />
+      <rect x="1" y="13.85" width="16.5" height="40.3" />
+      <rect x="1" y="24.84" width="5.5" height="18.32" />
+      <circle cx="12" cy="34" r="0.6" class="dot" />
+      <path d="M17.5 26.7 A9.15 9.15 0 0 1 17.5 41.3" />
+      <rect x="87.5" y="13.85" width="16.5" height="40.3" />
+      <rect x="98.5" y="24.84" width="5.5" height="18.32" />
+      <circle cx="93" cy="34" r="0.6" class="dot" />
+      <path d="M87.5 26.7 A9.15 9.15 0 0 0 87.5 41.3" />
+      <rect x="-1.4" y="30.34" width="2.4" height="7.32" class="goal" />
+      <rect x="104" y="30.34" width="2.4" height="7.32" class="goal" />
+    </svg>
+    <svg class="lines portrait" viewBox="0 0 68 105" preserveAspectRatio="none" aria-hidden="true">
+      <rect x="1" y="1" width="66" height="103" />
+      <line x1="1" y1="52.5" x2="67" y2="52.5" />
+      <circle cx="34" cy="52.5" r="9.15" />
+      <circle cx="34" cy="52.5" r="0.6" class="dot" />
+      <rect x="13.85" y="1" width="40.3" height="16.5" />
+      <rect x="24.84" y="1" width="18.32" height="5.5" />
+      <circle cx="34" cy="12" r="0.6" class="dot" />
+      <path d="M26.7 17.5 A9.15 9.15 0 0 0 41.3 17.5" />
+      <rect x="13.85" y="87.5" width="40.3" height="16.5" />
+      <rect x="24.84" y="98.5" width="18.32" height="5.5" />
+      <circle cx="34" cy="93" r="0.6" class="dot" />
+      <path d="M26.7 87.5 A9.15 9.15 0 0 1 41.3 87.5" />
+    </svg>
+
+    <div class="ball" id="ball" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="100%" height="100%">
+        <circle cx="12" cy="12" r="11" fill="#fff" stroke="#121614" stroke-width="1.2" />
+        <path d="M12 7.2 L16.1 10.2 L14.5 15 L9.5 15 L7.9 10.2 Z" fill="#121614" />
+        <path d="M12 1.2 V7.2 M16.1 10.2 L21.9 8.4 M14.5 15 L18 20 M9.5 15 L6 20 M7.9 10.2 L2.1 8.4" stroke="#121614" stroke-width="1.1" fill="none" />
+      </svg>
+    </div>
+
+    {squad.map((s) => {
+      const p = spots[s.key];
+      return (
+        <a
+          class={`player ${s.key === 'me' ? 'captain' : ''}`}
+          href={s.href}
+          target={s.key === 'me' ? '_blank' : undefined}
+          rel={s.key === 'me' ? 'noopener' : undefined}
+          data-key={s.key}
+          style={`--x:${p.x};--y:${p.y};--mx:${p.mx};--my:${p.my};`}
+          aria-label={`${s.label}: ${s.line}`}
+        >
+          <span class="shirt-wrap">
+            <Jersey number={s.number} size={64} class="shirt-svg" />
+            {s.key === 'me' && <span class="armband" aria-hidden="true">C</span>}
+          </span>
+          <span class="tag">
+            <strong>{s.label}</strong>
+            <small>{s.position}</small>
+          </span>
+          <span class="tip" aria-hidden="true">{s.line}</span>
+        </a>
+      );
+    })}
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var pitch = document.getElementById('pitch');
+    var ball = document.getElementById('ball');
+    if (!pitch || !ball) return;
+    var portrait = window.matchMedia('(max-width: 700px)');
+    var home = { x: 52.5 / 1.05, y: 50 };
+    function place(x, y) {
+      ball.style.setProperty('--bx', x);
+      ball.style.setProperty('--by', y);
+    }
+    function spot(el) {
+      var s = el.style;
+      return portrait.matches
+        ? { x: +s.getPropertyValue('--mx'), y: +s.getPropertyValue('--my') }
+        : { x: +s.getPropertyValue('--x'), y: +s.getPropertyValue('--y') };
+    }
+    function toPlayer(el) {
+      var p = spot(el);
+      // Ball sits just in front of the player's feet.
+      place(p.x + (portrait.matches ? 11 : 5), p.y + (portrait.matches ? 0 : 1.5));
+    }
+    function reset() { place(home.x, home.y); }
+    pitch.querySelectorAll('.player').forEach(function (el) {
+      el.addEventListener('mouseenter', function () { toPlayer(el); });
+      el.addEventListener('focus', function () { toPlayer(el); });
+    });
+    pitch.addEventListener('mouseleave', reset);
+    portrait.addEventListener('change', reset);
+    reset();
+  })();
+</script>
+
+<style>
+  .stadium {
+    position: relative;
+    border-radius: 30px;
+    padding: 14px;
+    background: var(--board);
+    box-shadow: 0 30px 60px -30px color-mix(in srgb, var(--turf) 70%, transparent);
+  }
+
+  /* Pitchside advertising boards */
+  .boards {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border-radius: 12px;
+  }
+  .boards span {
+    flex: 1 0 auto;
+    padding: 9px 14px;
+    font-family: var(--font-display);
+    font-size: 15px;
+    letter-spacing: .02em;
+    white-space: nowrap;
+    text-align: center;
+    border-radius: 8px;
+    transition: background-color .3s ease, color .3s ease;
+  }
+  .boards span:nth-child(odd) { background: var(--kit); color: var(--kit-trim); }
+  .boards span:nth-child(even) { background: var(--kit-trim); color: var(--kit); }
+
+  .pitch {
+    position: relative;
+    aspect-ratio: 105 / 68;
+    border-radius: 18px;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(90deg, var(--turf) 0 9.0909%, var(--turf-2) 9.0909% 18.1818%);
+  }
+  :global(:root.dark) .pitch::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(60% 70% at 0% 0%, rgba(255,255,230,.14), transparent 60%),
+      radial-gradient(60% 70% at 100% 0%, rgba(255,255,230,.14), transparent 60%);
+  }
+
+  .lines {
+    position: absolute;
+    inset: 4%;
+    width: 92%;
+    height: 92%;
+    overflow: visible;
+    fill: none;
+    stroke: var(--turf-line);
+  }
+  .lines * { vector-effect: non-scaling-stroke; stroke-width: 2.2; }
+  .lines .dot { fill: var(--turf-line); }
+  .lines .goal { stroke-width: 2.6; }
+  .portrait { display: none; }
+
+  /* Players and ball are placed inside the line area (4% inset) */
+  .player, .ball {
+    position: absolute;
+    left: calc(4% + var(--x) * 0.92%);
+    top: calc(4% + var(--y) * 0.92%);
+  }
+  .ball {
+    --bx: 50; --by: 50;
+    left: calc(4% + var(--bx) * 0.92%);
+    top: calc(4% + var(--by) * 0.92%);
+    width: clamp(18px, 2.4vw, 30px);
+    height: clamp(18px, 2.4vw, 30px);
+    translate: -50% -50%;
+    z-index: 2;
+    filter: drop-shadow(0 3px 2px rgba(0,0,0,.35));
+    transition: left .55s cubic-bezier(.3,.7,.2,1), top .55s cubic-bezier(.3,.7,.2,1), rotate .55s ease;
+    pointer-events: none;
+  }
+
+  .player {
+    z-index: 3;
+    translate: -50% -50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: var(--ink);
+    width: 160px;
+  }
+  .player :global(.shirt-svg) {
+    position: relative;
+    width: clamp(54px, 7vw, 96px);
+    height: auto;
+    transition: transform .2s cubic-bezier(.3,.7,.2,1);
+    filter: drop-shadow(0 10px 6px rgba(0,0,0,.3));
+  }
+  .shirt-wrap { position: relative; display: block; }
+  .armband {
+    position: absolute;
+    top: 30%;
+    right: -6px;
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    border-radius: 6px;
+    background: #FFD23F;
+    color: #121614;
+    font: 800 13px/1 var(--font-sans);
+    border: 2px solid #121614;
+    rotate: 8deg;
+    transition: transform .2s cubic-bezier(.3,.7,.2,1);
+  }
+  .captain .tag { background: var(--kit); }
+  .captain .tag strong, .captain .tag small { color: var(--kit-trim); }
+  .captain:hover .armband, .captain:focus-visible .armband { transform: translateY(-6px); }
+  .tag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.1;
+    background: var(--surface);
+    border-radius: 12px;
+    padding: 7px 14px 8px;
+    box-shadow: 0 2px 0 rgba(0,0,0,.2);
+    transition: background-color .2s ease;
+  }
+  .tag strong { font-family: var(--font-display); font-weight: 400; font-size: clamp(19px, 2vw, 26px); letter-spacing: .01em; }
+  .tag small { font-size: 12.5px; color: var(--ink-muted); font-weight: 600; }
+
+  .tip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    white-space: nowrap;
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 7px 12px;
+    border-radius: 10px;
+    opacity: 0;
+    translate: 0 6px;
+    pointer-events: none;
+    transition: opacity .18s ease, translate .18s ease;
+  }
+  .player:hover :global(.shirt-svg),
+  .player:focus-visible :global(.shirt-svg) { transform: translateY(-6px) rotate(-4deg); }
+  .player:hover .tag, .player:focus-visible .tag { background: var(--kit); }
+  .player:hover .tag small, .player:focus-visible .tag small { color: var(--kit-trim); }
+  .player:hover .tag strong, .player:focus-visible .tag strong { color: var(--kit-trim); }
+  .player:hover .tip, .player:focus-visible .tip { opacity: 1; translate: 0 0; }
+  .player:focus-visible { outline: none; }
+  .player:focus-visible .tag { outline: 3px solid #fff; outline-offset: 2px; }
+
+  @media (max-width: 700px) {
+    .stadium { padding: 10px; border-radius: 24px; }
+    .boards span { font-size: 13px; padding: 7px 10px; }
+    .boards span:nth-child(n+3) { display: none; }
+    .pitch {
+      aspect-ratio: 68 / 105;
+      max-height: 78vh;
+      margin: 0 auto;
+      background: repeating-linear-gradient(0deg, var(--turf) 0 9.0909%, var(--turf-2) 9.0909% 18.1818%);
+    }
+    .landscape { display: none; }
+    .portrait { display: block; }
+    .player { left: calc(4% + var(--mx) * 0.92%); top: calc(4% + var(--my) * 0.92%); width: 110px; }
+    .tag strong { font-size: 18px; }
+    .tip { display: none; }
+  }
+</style>

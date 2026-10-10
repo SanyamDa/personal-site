@@ -1,0 +1,45 @@
+---
+// A football shirt drawn in SVG. Colours come from the active kit.
+interface Props {
+  number?: number | string;
+  size?: number;
+  class?: string;
+}
+const { number = '', size = 56, class: cls = '' } = Astro.props;
+---
+
+<svg
+  class={`jersey ${cls}`}
+  width={size}
+  height={size}
+  viewBox="0 0 64 64"
+  aria-hidden="true"
+>
+  <path
+    class="shirt"
+    d="M22 6 L12 9 L2 20 L9 29 L14 25 L14 58 L50 58 L50 25 L55 29 L62 20 L52 9 L42 6 C40 11 36 13 32 13 C28 13 24 11 22 6 Z"
+  />
+  <path class="trim" d="M2 20 L9 29 L14 25 L12 14 Z M62 20 L55 29 L50 25 L52 14 Z" />
+  <path class="collar" d="M22 6 C24 11 28 13 32 13 C36 13 40 11 42 6 L39 5 C37 9 35 10 32 10 C29 10 27 9 25 5 Z" />
+  {number !== '' && (
+    <text x="32" y="46" text-anchor="middle" class="num">{number}</text>
+  )}
+</svg>
+
+<style>
+  .jersey { display: block; overflow: visible; }
+  .shirt {
+    fill: var(--kit);
+    stroke: var(--kit-trim);
+    stroke-width: 1.6;
+    stroke-linejoin: round;
+    transition: fill .3s ease;
+  }
+  .trim, .collar { fill: var(--kit-accent); transition: fill .3s ease; }
+  .num {
+    font-family: var(--font-display);
+    font-size: 24px;
+    fill: var(--kit-trim);
+    transition: fill .3s ease;
+  }
+</style>
