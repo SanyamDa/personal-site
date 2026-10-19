@@ -69,22 +69,22 @@ const items = [
     padding: 0;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 7px;
   }
   .soc {
     display: grid;
     place-items: center;
-    width: 64px;
-    height: 64px;
-    border-radius: 18px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
     color: var(--ink);
     opacity: .38;
     filter: grayscale(1);
     transition: opacity .25s ease, filter .25s ease, transform .25s cubic-bezier(.3,.7,.2,1), background-color .25s ease;
   }
-  .soc svg { width: 42px; height: 42px; overflow: visible; }
-  .youtube svg { width: 46px; }
-  .x svg { width: 34px; height: 34px; }
+  .soc svg { width: 21px; height: 21px; overflow: visible; }
+  .youtube svg { width: 23px; }
+  .x svg { width: 17px; height: 17px; }
 
   .ig { stroke: currentColor; }
   .ig-dot { fill: currentColor; }
@@ -104,10 +104,10 @@ const items = [
   .instagram:hover svg, .instagram:focus-visible svg { filter: drop-shadow(0 6px 14px rgba(214,41,118,.4)); }
 
   @media (max-width: 640px) {
-    .socials { gap: 6px; }
-    .soc { width: 54px; height: 54px; }
-    .soc svg { width: 34px; height: 34px; }
-    .youtube svg { width: 38px; }
-    .x svg { width: 28px; height: 28px; }
+    .socials { gap: 3px; }
+    .soc { width: 27px; height: 27px; }
+    .soc svg { width: 17px; height: 17px; }
+    .youtube svg { width: 19px; }
+    .x svg { width: 14px; height: 14px; }
   }
 </style>

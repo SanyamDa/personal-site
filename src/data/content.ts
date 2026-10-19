@@ -17,9 +17,9 @@ export const profile = {
 // Any left as '' still show up, but link nowhere until you fill them in.
 export const socials = {
   linkedin: 'https://www.linkedin.com/in/sanyam-jain-140830320/',
-  x: '',
-  youtube: '',
-  instagram: '',
+  x: 'https://x.com/SanyamDaBaby',
+  youtube: 'https://www.youtube.com/@lifeofsanyam',
+  instagram: 'https://www.instagram.com/makerspace.hackclub/',
 };
 
 // The players on the homepage pitch. 'me' is you, the striker; tapping you opens your résumé.
@@ -28,7 +28,7 @@ export const squad = [
   { key: 'people', label: 'People', number: 6, position: 'Holding mid', line: 'The people who have my back.', href: '/people' },
   { key: 'passions', label: 'Passions', number: 7, position: 'Winger', line: 'What drives everything I do.', href: '/passions' },
   { key: 'projects', label: 'Projects', number: 10, position: 'Playmaker', line: 'Everything I have built.', href: '/projects' },
-  { key: 'me', label: 'Sanyam', number: 24, position: 'Striker', line: "That's me. Tap for my résumé.", href: '/resume.pdf' },
+  { key: 'me', label: 'Sanyam', number: 24, position: 'Striker', line: 'Tap for my resume', href: '/resume.pdf' },
 ] as const;
 
 // ---------- Projects ----------
